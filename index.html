@@ -74,6 +74,14 @@
         <div class="project-tools">
             <label for="project-search">Search projects</label>
             <input id="project-search" type="search" placeholder="Try &quot;FPGA&quot; or &quot;Verilog&quot;">
+            <div class="project-sort">
+                <label for="project-sort">Sort projects</label>
+                <select id="project-sort">
+                    <option value="default">Original order</option>
+                    <option value="title-asc">Title (A to Z)</option>
+                    <option value="title-desc">Title (Z to A)</option>
+                </select>
+            </div>
             <div id="project-filters" class="filter-chips" aria-label="Filter by technology"></div>
             <p id="project-count" class="project-count" aria-live="polite"></p>
         </div>

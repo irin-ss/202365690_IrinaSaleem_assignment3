@@ -58,7 +58,7 @@ It does not include this Assignment 3 update unless the new version is deployed.
 
 | Requirement | What I added |
 | --- | --- |
-| **Dynamic content** | **Live project search** and **tag filter chips** (e.g. Verilog, FPGA). Chips are generated automatically from each project card's tags, and a counter shows "Showing X of Y projects" |
+| **Dynamic content** | **Live project search**, **tag filter chips** (e.g. Verilog, FPGA), and project title sorting (A-Z or Z-A). Chips are generated automatically from each project card's tags, and a counter shows "Showing X of Y projects" |
 | **Data handling** | **Contact form validation** (name, email format, message length) with a confirmation message on success, plus `localStorage` for the theme and for the visitor's details |
 | **Personalised greeting** | After a successful form submission, the visitor's name is saved in their browser, so the greeting becomes e.g. "Good evening, Irina". Name and email also pre-fill the form next time. A **"Not you? Forget my details"** button clears them |
 | **Animation and transitions** | Fade-in on scroll for cards and the form, hover transitions on buttons, chips and cards, and animated error and success messages. Animations are turned off for visitors who prefer reduced motion |
@@ -107,7 +107,10 @@ http://localhost:8000
 
 ### Trying the new features
 
-1. **Beyond Earth:** scroll to the APOD section and confirm its loading message
+1. **Search, filter, and sort projects:** search for "Verilog", select the FPGA
+   filter chip, and change the sort order to see matching projects reordered.
+   The clear button resets the search and technology filter.
+2. **Beyond Earth:** scroll to the APOD section and confirm its loading message
    is replaced with NASA's latest image, explanation, date, and credit.
 
 ## Documentation

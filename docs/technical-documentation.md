@@ -11,7 +11,7 @@ All features start from one `DOMContentLoaded` listener. Each feature is its own
 | `initThemeToggle()` | Switches `data-theme="dark"` on `<html>`. Saves the choice under the `portfolio-theme` key in `localStorage`; falls back to the OS colour scheme on the first visit |
 | `safeGetItem()` / `safeSetItem()` | `try/catch` wrappers so storage errors (e.g. private browsing) never break the page |
 | `initGreeting()` | Sets the greeting text from `new Date().getHours()` |
-| `initProjectFilter()` | Builds filter chips from the `.tag-list li` tags, filters cards by tag and search text, toggles the empty state and updates the counter |
+| `initProjectFilter()` | Builds filter chips from the `.tag-list li` tags, filters cards by tag and search text, sorts by project title or original order, toggles the empty state and updates the counter |
 | `initContactForm()` | Custom validation (name ≥ 2 chars, valid email pattern, message ≥ 10 chars), inline error elements, confirmation message, focus moves to the first invalid field |
 | `initVisitorMemory()` + helpers (`getVisitor`, `saveVisitor`, `clearVisitor`, `prefillForm`, `updateGreetingWithName`) | Saves the name and email under `portfolio-visitor` in `localStorage` after a successful form submit, pre-fills the form on later visits, adds the first name to the greeting and offers a "Not you?" button to forget the details. Stored data never leaves the browser |
 | `initScrollReveal()` | `IntersectionObserver` adds `.is-visible` to cards as they scroll into view. Skipped when the user prefers reduced motion |
@@ -21,7 +21,7 @@ All features start from one `DOMContentLoaded` listener. Each feature is its own
 
 ## Data flow
 - **Theme:** click → toggle attribute → write to `localStorage`. On load → read `localStorage` → apply.
-- **Project filter:** `input` event / chip click → `update()` → each card's `hidden` property is set → counter and empty state refresh.
+- **Project filter/sort:** search input, tag-chip click, or sort selection → `update()` → cards are reordered and filtered → counter and empty state refresh.
 - **Form:** `submit` → `preventDefault()` → validate every field → show errors or a success message and reset.
 - **APOD:** page load → request one entry from NASA's public APOD endpoint → validate the response array → render its text and image/video; failures show a section-local message. Image load failures replace the image with an explanation and a link to NASA.
 

@@ -326,12 +326,16 @@ function initProjectFilter() {
     const emptyState = document.getElementById('project-empty');
     const resultCount = document.getElementById('project-count');
     const clearBtn = document.getElementById('project-clear');
+    const sortSelect = document.getElementById('project-sort');
+    const projectGrid = document.querySelector('.project-grid');
     const cards = Array.from(document.querySelectorAll('.project-card'));
 
-    if (!searchInput || !filterBox || !emptyState || !resultCount || cards.length === 0) return;
+    if (!searchInput || !filterBox || !emptyState || !resultCount || !projectGrid || cards.length === 0) return;
 
     const tagsOf = (card) =>
         Array.from(card.querySelectorAll('.tag-list li'), (li) => li.textContent.trim());
+    const originalOrder = new Map(cards.map((card, index) => [card, index]));
+    const titleOf = (card) => card.querySelector('h3')?.textContent.trim() || '';
 
     // Unique list of tags across all cards
     const allTags = [...new Set(cards.flatMap(tagsOf))];
@@ -354,6 +358,7 @@ function initProjectFilter() {
     });
 
     searchInput.addEventListener('input', update);
+    if (sortSelect) sortSelect.addEventListener('change', update);
 
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
@@ -369,9 +374,21 @@ function initProjectFilter() {
 
     function update() {
         const query = searchInput.value.trim().toLowerCase();
+        const sortOrder = sortSelect ? sortSelect.value : 'default';
         let visible = 0;
 
-        cards.forEach((card) => {
+        const sortedCards = [...cards].sort((first, second) => {
+            if (sortOrder === 'title-asc') {
+                return titleOf(first).localeCompare(titleOf(second), undefined, { sensitivity: 'base' });
+            }
+            if (sortOrder === 'title-desc') {
+                return titleOf(second).localeCompare(titleOf(first), undefined, { sensitivity: 'base' });
+            }
+            return originalOrder.get(first) - originalOrder.get(second);
+        });
+
+        sortedCards.forEach((card) => {
+            projectGrid.appendChild(card);
             const matchesTag = activeTag === 'All' || tagsOf(card).includes(activeTag);
             const matchesText = card.textContent.toLowerCase().includes(query);
             const show = matchesTag && matchesText;
