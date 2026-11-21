@@ -273,22 +273,26 @@
         <form action="#" method="post" class="contact-form">
             <div class="form-row">
                 <label for="name">Your Name:</label>
-                <input id="name" name="name" type="text" placeholder="Your name" required>
+                <input id="name" name="name" type="text" placeholder="Your name"
+                       minlength="2" maxlength="80" autocomplete="name" required>
             </div>
 
             <div class="form-row">
                 <label for="email">Your email:</label>
-                <input id="email" name="email" type="text" placeholder="xyz@email.com" required>
+                <input id="email" name="email" type="email" placeholder="xyz@email.com"
+                       maxlength="254" autocomplete="email" required>
             </div>
 
             <div class="form-row">
                 <label for="message">Your Message:</label>
-                <textarea id="message" name="message" rows="4" placeholder="Write your message..." required></textarea>
+                <textarea id="message" name="message" rows="4"
+                          minlength="10" maxlength="1000"
+                          placeholder="Write your message..." required></textarea>
             </div>
 
             <div class="form-row">
                 <label for="topic">Query Type:</label>
-                <select id="topic" name="topic">
+                <select id="topic" name="topic" required>
                     <option value="">Select a category</option>
                     <option value="project">Technical Project</option>
                     <option value="design">Graphic Design</option>
@@ -303,8 +307,13 @@
 </section>
 <!-- FOOTER -->
 <footer>
-    <div class="wrap">
-        <p class="site-footer">&copy; 2026 Irina Saleem. Built for SWE363.</p>
+    <div class="wrap footer-inner">
+        <div>
+            <p class="site-footer">&copy; 2026 Irina Saleem. Built for SWE363.</p>
+            <p id="visit-duration" class="visit-duration" role="timer" aria-label="Time spent on this page">
+                Time on site: 00:00
+            </p>
+        </div>
         <div class="nav">
             <a href="#top" class="back-to-top" aria-label="Go to Top">↑</a>
         </div>

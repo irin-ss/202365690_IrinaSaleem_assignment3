@@ -10,9 +10,8 @@ personalised greeting, and scroll animations. **Assignment 3** adds a live NASA
 APOD section with loading, empty, media, and error handling.
 
 ## Live Demo
-The previous Assignment 2 deployment is available at
-[GitHub Pages](https://irin-ss.github.io/202365690-IrinaSaleem-assignment2/).
-It does not include this Assignment 3 update unless the new version is deployed.
+The Assignment 3 deployment is available at
+[GitHub Pages: Irina's Portfolio](https://irin-ss.github.io/202365690_IrinaSaleem_assignment3/).
 
 
 ## Folder Structure
@@ -71,6 +70,8 @@ message is not actually sent.
 
 ### New in Assignment 3
 
+- **Visit timer:** a footer counter shows how long the visitor has remained on
+  the page, updating every second in `MM:SS` or `HH:MM:SS` format.
 - **Beyond Earth:** fetches the latest APOD directly from NASA's public
   `https://science.nasa.gov/wp-json/wp/v2/apod-basic/?per_page=1` endpoint.
 - Shows the image (preferring `hdurl`), title, publication date, NASA
@@ -112,6 +113,8 @@ http://localhost:8000
    The clear button resets the search and technology filter.
 2. **Beyond Earth:** scroll to the APOD section and confirm its loading message
    is replaced with NASA's latest image, explanation, date, and credit.
+3. **Visit timer:** remain on the page and observe the footer counter advance
+   every second.
 
 ## Documentation
 

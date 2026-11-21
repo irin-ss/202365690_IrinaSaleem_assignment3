@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initVisitorMemory();
     initBeyondEarth();
+    initVisitTimer();
 });
 
 function initGreeting() {
@@ -27,6 +28,33 @@ function initGreeting() {
     }
 
     greetingEl.textContent = greeting;
+}
+
+/* --------------------------------------------------------------------
+ * Visit timer: counts elapsed time since this page was loaded
+ * ------------------------------------------------------------------ */
+function initVisitTimer() {
+    const timer = document.getElementById('visit-duration');
+    if (!timer) return;
+
+    const startTime = Date.now();
+
+    function updateVisitDuration() {
+        const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+        const hours = Math.floor(elapsedSeconds / 3600);
+        const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+        const seconds = elapsedSeconds % 60;
+        const pad = (value) => String(value).padStart(2, '0');
+        const display = hours > 0
+            ? `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+            : `${pad(minutes)}:${pad(seconds)}`;
+
+        timer.textContent = `Time on site: ${display}`;
+        timer.setAttribute('aria-label', `Time spent on this page: ${display}`);
+    }
+
+    updateVisitDuration();
+    window.setInterval(updateVisitDuration, 1000);
 }
 
 /* --------------------------------------------------------------------
@@ -420,17 +448,28 @@ function initContactForm() {
     const fields = {
         name: form.querySelector('#name'),
         email: form.querySelector('#email'),
-        message: form.querySelector('#message')
+        message: form.querySelector('#message'),
+        topic: form.querySelector('#topic')
     };
 
     const validators = {
-        name: (v) => (v.length < 2 ? 'Please enter your name (at least 2 characters).' : ''),
+        name: (v) => {
+            if (!v) return 'Please enter your name.';
+            return v.length < 2 ? 'Please enter at least 2 characters for your name.' : '';
+        },
         email: (v) => {
             if (!v) return 'Please enter your email address.';
-            const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+            const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) &&
+                !v.includes('..') &&
+                !v.startsWith('.') &&
+                !v.includes('.@');
             return ok ? '' : 'That email doesn\'t look right. Try something like name@example.com.';
         },
-        message: (v) => (v.length < 10 ? 'Your message is a bit short. Please write at least 10 characters.' : '')
+        message: (v) => {
+            if (!v) return 'Please enter a message.';
+            return v.length < 10 ? 'Your message is a bit short. Please write at least 10 characters.' : '';
+        },
+        topic: (v) => (v ? '' : 'Please choose a query type.')
     };
 
     // Turn off the browser's default bubbles so our own messages show

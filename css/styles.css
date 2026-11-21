@@ -455,6 +455,18 @@ input, textarea, select {
     font-size: 0.9rem;
 }
 
+.footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.visit-duration {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.35rem 0 0;
+}
 
 .back-to-top {
     display: inline-flex;
@@ -761,7 +773,8 @@ input, textarea, select {
 .field-error[hidden] { display: none; }
 
 input[aria-invalid="true"],
-textarea[aria-invalid="true"] {
+textarea[aria-invalid="true"],
+select[aria-invalid="true"] {
     border-color: var(--danger);
 }
 
