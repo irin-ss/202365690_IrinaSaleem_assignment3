@@ -19,6 +19,7 @@
                 <li><a href="#projects">Technical Projects</a></li>
                 <li><a href="#designs">Designs</a></li>
                 <li><a href="#skills">Skills</a></li>
+                <li><a href="#beyond-earth">Beyond Earth</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
@@ -206,6 +207,51 @@
         </div>
     </div>
 </section>
+
+<!--===NASA Astronomy Picture of the Day===-->
+<section id="beyond-earth" class="beyond-earth" aria-labelledby="beyond-earth-heading">
+    <div class="wrap">
+        <h2 id="beyond-earth-heading">Beyond Earth</h2>
+        <p class="section-lede">A little space for one of my biggest curiosities. 
+            From distant galaxies to the technology that brings us closer to the stars, 
+            I've always been fascinated by what's beyond our world.</p>
+        <p id="apod-status" class="beyond-earth-status" role="status" aria-live="polite">
+            Loading today's picture...
+        </p>
+        <article id="apod-entry" class="apod-entry" hidden>
+            <div class="apod-details">
+                <p id="apod-date" class="apod-date"></p>
+                <h3 id="apod-title"></h3>
+            </div>
+            <div class="apod-media">
+                <div class="apod-image-stage">
+                    <img id="apod-image" alt="" hidden>
+                    <p id="apod-image-error" class="apod-image-error" hidden>
+                        The astronomy image could not be loaded. You can still explore the original NASA page.
+                    </p>
+                    <div id="apod-video" class="apod-video" hidden></div>
+                    <div id="apod-explanation-overlay" class="apod-explanation-overlay">
+                        <div id="apod-explanation" class="apod-explanation"></div>
+                    </div>
+                    <details id="apod-explanation-details" class="apod-explanation-details">
+                        <summary class="apod-explanation-toggle">Read the image explanation</summary>
+                    </details>
+                </div>
+            </div>
+            <div class="apod-footer">
+                <p id="apod-credit" class="apod-credit" hidden></p>
+                <p id="apod-tomorrow" class="apod-tomorrow" hidden>
+                    <strong>Tomorrow's picture:</strong>
+                    <span id="apod-tomorrow-title"></span>
+                </p>
+                <a id="apod-original" class="apod-original" target="_blank" rel="noopener noreferrer">
+                    Explore the original NASA page
+                </a>
+            </div>
+        </article>
+    </div>
+</section>
+
 
 <!--==Contact===-->
 <section id="contact">

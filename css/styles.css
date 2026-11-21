@@ -540,6 +540,205 @@ input, textarea, select {
 
 .empty-state[hidden] { display: none; }
 
+/* ---- NASA Astronomy Picture of the Day ---- */
+.beyond-earth-status {
+    color: var(--muted);
+    min-height: 1.6em;
+}
+
+.beyond-earth-status.is-error,
+.apod-image-error {
+    color: var(--danger);
+}
+
+.apod-entry {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.apod-entry[hidden] { display: none; }
+
+.apod-entry:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.apod-details {
+    min-width: 0;
+    padding: 1.25rem 1.5rem 1rem;
+}
+
+.apod-date {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.apod-details h3 {
+    color: var(--ink);
+    margin-bottom: 0;
+}
+
+.apod-media,
+.apod-footer {
+    min-width: 0;
+}
+
+.apod-image-stage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 16 / 9;
+    background: var(--ink);
+}
+
+.apod-image-stage > #apod-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+
+.apod-image-stage:hover > #apod-image {
+    transform: scale(1.035);
+}
+
+.apod-image-stage > #apod-image[hidden],
+.apod-video[hidden],
+.apod-image-error[hidden] {
+    display: none;
+}
+
+.apod-image-error {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    margin: 0;
+    padding: 1.5rem;
+    text-align: center;
+    background: var(--bg);
+}
+
+.apod-video {
+    position: absolute;
+    inset: 0;
+    padding: 1.5rem;
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 0.8rem;
+    background: var(--bg);
+}
+
+.apod-video p,
+.apod-credit {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.apod-explanation-details {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.apod-explanation-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    overflow: auto;
+    padding: clamp(1.25rem, 4vw, 3rem);
+    color: #FFFFFF;
+    background: rgba(20, 24, 27, 0.84);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+
+.apod-image-stage:hover .apod-explanation-overlay,
+.apod-image-stage:has(.apod-explanation-toggle:focus-visible) .apod-explanation-overlay,
+.apod-image-stage.is-explanation-open .apod-explanation-overlay {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.apod-explanation-overlay .apod-explanation {
+    max-height: 100%;
+    overflow: auto;
+    overflow-wrap: anywhere;
+}
+
+.apod-explanation-overlay .apod-explanation p:last-child {
+    margin-bottom: 0;
+}
+
+.apod-explanation-overlay a {
+    color: #FFFFFF;
+    text-decoration-color: var(--accent-2);
+}
+
+.apod-explanation-toggle {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 2;
+    pointer-events: auto;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: var(--radius);
+    color: #FFFFFF;
+    background: rgba(20, 24, 27, 0.76);
+    font: 500 0.85rem var(--font-body);
+    cursor: pointer;
+    list-style: none;
+}
+
+.apod-explanation-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.apod-explanation-toggle:focus-visible {
+    outline: 2px solid #FFFFFF;
+    outline-offset: 3px;
+}
+
+.apod-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 1rem 1.5rem 1.25rem;
+}
+
+.apod-footer p {
+    margin: 0;
+}
+
+.apod-credit {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.apod-original {
+    display: inline-block;
+    margin-top: 0.35rem;
+    font-weight: 600;
+}
+
 /* ---- Form feedback ---- */
 .field-error {
     color: var(--danger);
@@ -604,6 +803,25 @@ textarea[aria-invalid="true"] {
 
 @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 700px) {
+    .apod-details {
+        padding: 1rem 1rem 0.8rem;
+    }
+
+    .apod-footer {
+        padding: 0.85rem 1rem 1rem;
+    }
+
+    .apod-explanation-overlay {
+        padding: 1rem;
+    }
+
+    .apod-explanation-toggle {
+        right: 0.65rem;
+        bottom: 0.65rem;
+    }
 }
 
 /* ---- Remembered visitor ("Not you?") ---- mostly by claude*/

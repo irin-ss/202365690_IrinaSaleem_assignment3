@@ -2,21 +2,23 @@
 
 A personal portfolio website built with HTML, CSS, and JavaScript for SWE363,
 featuring an About/Hero section, technical projects, a design gallery, skills,
-and a contact form.
+NASA's Astronomy Picture of the Day, and a contact form.
 
-**Assignment 1** built the static site. **Assignment 2** (this version) adds
+**Assignment 1** built the static site. **Assignment 2** adds
 interactivity: project search and filters, a validated contact form, a
-personalised greeting, and scroll animations.
+personalised greeting, and scroll animations. **Assignment 3** adds a live NASA
+APOD section with loading, empty, media, and error handling.
 
 ## Live Demo
-[Visit this site](https://irin-ss.github.io/202365690-IrinaSaleem-assignment2/)
-to view the live demo of the portfolio.
+The previous Assignment 2 deployment is available at
+[GitHub Pages](https://irin-ss.github.io/202365690-IrinaSaleem-assignment2/).
+It does not include this Assignment 3 update unless the new version is deployed.
 
 
 ## Folder Structure
 
 ```
-202365690-IrinaSaleem-assignment2/
+202365690_IrinaSaleem_assignment3/
 ├── README.md
 ├── index.html
 ├── css/
@@ -67,19 +69,33 @@ to view the live demo of the portfolio.
 submission shows a confirmation and saves the visitor's details locally, but the
 message is not actually sent.
 
+### New in Assignment 3
+
+- **Beyond Earth:** fetches the latest APOD directly from NASA's public
+  `https://science.nasa.gov/wp-json/wp/v2/apod-basic/?per_page=1` endpoint.
+- Shows the image (preferring `hdurl`), title, publication date, NASA
+  explanation, available credit/copyright, and a link to the original NASA page.
+- Displays a media link for video entries, plus loading, empty, request-error,
+  and image-load-error states. Failures are kept within the APOD section.
+- Uses the same theme colours and typography and adapts to narrow screens.
+
+The API request runs in the browser with `fetch()` and needs no API key or
+backend. A cross-origin browser request and the current image URL were tested
+successfully. If the endpoint is unavailable, the rest of the portfolio remains
+usable and the APOD section shows a friendly message.
+
 ## Setup Instructions - Run Locally
 
 No build tools or installs are required — this is a static site.
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/irin-ss/202365690-IrinaSaleem-assignment2.git
-cd 202365690-IrinaSaleem-assignment2
+git clone https://github.com/irin-ss/202365690_IrinaSaleem_assignment3.git
+cd 202365690_IrinaSaleem_assignment3
 ```
-2. **Open it in a browser**
-    - Double-click `index.html`, or
+2. **Serve it over HTTP** (needed for the APOD request)
     - Open the folder in VS Code and use the "Live Server" extension, or
-    - Serve it locally:
+    - Start a local server:
 ```bash
 python3 -m http.server 8000
 ```
@@ -91,10 +107,8 @@ http://localhost:8000
 
 ### Trying the new features
 
-1. **Search and filter:** type "FPGA" in the project search, or click a tag chip. Search for nonsense to see the empty state.
-2. **Form validation:** press *Send Message* with empty fields, then with an invalid email, then with valid details.
-3. **Personalised greeting:** after a valid submission, the greeting gains your first name. Refresh the page and it stays. Click *Not you?* to clear it.
-4. **Theme:** toggle dark mode, refresh, and the choice is kept.
+1. **Beyond Earth:** scroll to the APOD section and confirm its loading message
+   is replaced with NASA's latest image, explanation, date, and credit.
 
 ## Documentation
 
@@ -106,11 +120,14 @@ http://localhost:8000
 In Assignment 1, AI assistance was used for scaffolding sections, debugging
 CSS/HTML class mismatches, and reviewing spacing and layout issues.
 
-In Assignment 2, AI (Claude) was used to help generate outlines and explain the project
-search and filter, the form validation, the scroll animations and the saved-name
-greeting. I reviewed, tested and edited the output, and kept my Assignment 1
-code intact. Full details — tools used, what was changed, and what I learned —
-are in [`docs/ai-usage-report.md`](docs/ai-usage-report.md).
+In Assignment 2, AI (Claude) was used to help generate outlines and explain the
+project search and filter, form validation, scroll animations, and saved-name
+greeting. 
+
+In Assignment 3, Copilot was used to help implement and document the
+NASA APOD section. The existing static project structure was retained; the
+generated suggestions were reviewed, adapted, and tested. Full details and the
+required usage log are in [`docs/ai-usage-report.md`](docs/ai-usage-report.md).
 
 ## Browser Support
 

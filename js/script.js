@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initScrollReveal();
     initVisitorMemory();
+    initBeyondEarth();
 });
 
 function initGreeting() {
@@ -26,6 +27,237 @@ function initGreeting() {
     }
 
     greetingEl.textContent = greeting;
+}
+
+/* --------------------------------------------------------------------
+ * NASA Astronomy Picture of the Day
+ * ------------------------------------------------------------------ */
+function initBeyondEarth() {
+    const section = document.getElementById('beyond-earth');
+    const status = document.getElementById('apod-status');
+    const entry = document.getElementById('apod-entry');
+    if (!section || !status || !entry) return;
+
+    const endpoint = 'https://science.nasa.gov/wp-json/wp/v2/apod-basic/?per_page=1';
+    const image = document.getElementById('apod-image');
+    const imageError = document.getElementById('apod-image-error');
+    const video = document.getElementById('apod-video');
+    const title = document.getElementById('apod-title');
+    const date = document.getElementById('apod-date');
+    const explanation = document.getElementById('apod-explanation');
+    const credit = document.getElementById('apod-credit');
+    const tomorrow = document.getElementById('apod-tomorrow');
+    const tomorrowTitle = document.getElementById('apod-tomorrow-title');
+    const original = document.getElementById('apod-original');
+    const imageStage = document.querySelector('.apod-image-stage');
+    const explanationDetails = document.getElementById('apod-explanation-details');
+
+    explanationDetails.addEventListener('toggle', () => {
+        imageStage.classList.toggle('is-explanation-open', explanationDetails.open);
+    });
+    imageStage.addEventListener('pointerleave', (event) => {
+        if (event.pointerType !== 'touch') explanationDetails.open = false;
+    });
+
+    fetch(endpoint)
+        .then((response) => {
+            if (!response.ok) throw new Error(`NASA APOD request failed (${response.status}).`);
+            return response.json();
+        })
+        .then((items) => {
+            if (!Array.isArray(items)) throw new Error('NASA returned an unexpected response.');
+            if (items.length === 0) {
+                showStatus("NASA hasn't published an astronomy picture for today yet.");
+                return;
+            }
+            if (!items[0] || typeof items[0] !== 'object' || Array.isArray(items[0]) ||
+                Object.keys(items[0]).length === 0) {
+                throw new Error('NASA returned an unexpected APOD entry.');
+            }
+
+            renderEntry(items[0]);
+        })
+        .catch((error) => {
+            console.error('Unable to load NASA APOD:', error);
+            showStatus("We couldn't load today's astronomy picture. Please try again later.", true);
+        });
+
+    function renderEntry(item) {
+        const titleText = item.title || 'Astronomy Picture of the Day';
+        const originalUrl = getSafeWebUrl(item.permalink || item.url) || 'https://science.nasa.gov/apod/';
+
+        title.textContent = titleText;
+        date.textContent = formatApodDate(item.date);
+        original.href = originalUrl;
+        const explanationParts = splitTomorrowPicture(
+            item.explanation || 'NASA has not provided an explanation for this picture.'
+        );
+        appendSafeMarkup(explanation, explanationParts.explanation);
+        if (explanationParts.tomorrow) {
+            tomorrowTitle.textContent = explanationParts.tomorrow;
+            tomorrow.hidden = false;
+        }
+
+        const creditText = item.credit || item.copyright;
+        if (creditText) {
+            appendSafeMarkup(credit, creditText);
+            credit.hidden = false;
+        }
+
+        if (item.media_type === 'video') {
+            renderVideo(item, originalUrl);
+        } else {
+            renderImage(item, titleText, originalUrl);
+        }
+
+        status.hidden = true;
+        entry.hidden = false;
+    }
+
+    function renderImage(item, altText, originalUrl) {
+        const imageUrl = getApodImageUrl(item);
+        if (!imageUrl) {
+            imageError.hidden = false;
+            imageError.textContent = 'NASA has not supplied an image URL for this picture. Explore the original NASA page instead.';
+            return;
+        }
+
+        image.src = imageUrl;
+        image.alt = item.alt || altText;
+        image.hidden = false;
+        image.addEventListener('error', () => {
+            image.hidden = true;
+            imageError.hidden = false;
+            imageError.textContent = "The astronomy image couldn't be loaded. ";
+            const fallbackLink = document.createElement('a');
+            fallbackLink.href = originalUrl;
+            fallbackLink.target = '_blank';
+            fallbackLink.rel = 'noopener noreferrer';
+            fallbackLink.textContent = 'Explore the original NASA page.';
+            imageError.appendChild(fallbackLink);
+        }, { once: true });
+    }
+
+    function renderVideo(item, originalUrl) {
+        const mediaUrl = getSafeWebUrl(item.url) || originalUrl;
+        const message = document.createElement('p');
+        message.textContent = "Today's APOD is a video or other media feature.";
+        const link = document.createElement('a');
+        link.href = mediaUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Watch or explore the APOD media';
+        video.append(message, link);
+        video.hidden = false;
+    }
+
+    function showStatus(message, isError) {
+        status.textContent = message;
+        status.classList.toggle('is-error', Boolean(isError));
+    }
+}
+
+function getApodImageUrl(item) {
+    const highResolutionUrl = getSafeWebUrl(item.hdurl);
+    if (highResolutionUrl) return highResolutionUrl;
+
+    const directUrl = item.image_url || item.imageUrl;
+    const safeDirectUrl = getSafeWebUrl(directUrl);
+    if (safeDirectUrl) return safeDirectUrl;
+
+    if (typeof item.basic_html === 'string') {
+        const documentFromHtml = new DOMParser().parseFromString(item.basic_html, 'text/html');
+        const source = documentFromHtml.querySelector('img[src]')?.getAttribute('src');
+        const safeSource = getSafeWebUrl(source);
+        if (safeSource) return safeSource;
+    }
+
+    return getSafeWebUrl(item.url);
+}
+
+function getSafeWebUrl(value) {
+    if (typeof value !== 'string' || !value.trim()) return '';
+    try {
+        const url = new URL(value, 'https://science.nasa.gov');
+        return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : '';
+    } catch (error) {
+        return '';
+    }
+}
+
+function formatApodDate(value) {
+    if (typeof value !== 'string') return 'Publication date unavailable';
+    const parsed = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(parsed.getTime())) return 'Publication date unavailable';
+    return new Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(parsed);
+}
+
+function splitTomorrowPicture(markup) {
+    const parsed = new DOMParser().parseFromString(markup, 'text/html');
+    const text = parsed.body.textContent || '';
+    const marker = /Tomorrow's picture:\s*/i;
+    const match = marker.exec(text);
+    if (!match) return { explanation: markup, tomorrow: '' };
+
+    const tomorrow = text.slice(match.index + match[0].length).trim();
+    const walker = document.createTreeWalker(parsed.body, NodeFilter.SHOW_TEXT);
+    let offset = 0;
+    let textNode = walker.nextNode();
+
+    while (textNode) {
+        const nodeEnd = offset + textNode.textContent.length;
+        if (match.index >= offset && match.index <= nodeEnd) {
+            const range = document.createRange();
+            range.setStart(textNode, match.index - offset);
+            range.setEnd(parsed.body, parsed.body.childNodes.length);
+            range.deleteContents();
+
+            const emptyParent = textNode.parentElement;
+            if (emptyParent && !emptyParent.textContent.trim() && !emptyParent.children.length) {
+                emptyParent.remove();
+            }
+            while (parsed.body.lastChild && parsed.body.lastChild.nodeName === 'BR') {
+                parsed.body.lastChild.remove();
+            }
+            break;
+        }
+        offset = nodeEnd;
+        textNode = walker.nextNode();
+    }
+
+    return { explanation: parsed.body.innerHTML, tomorrow };
+}
+
+function appendSafeMarkup(target, markup) {
+    const parsed = new DOMParser().parseFromString(markup, 'text/html');
+    const allowedTags = new Set(['A', 'B', 'BR', 'EM', 'I', 'P', 'STRONG']);
+
+    function copyNode(source, destination) {
+        if (source.nodeType === Node.TEXT_NODE) {
+            destination.appendChild(document.createTextNode(source.textContent));
+            return;
+        }
+
+        if (source.nodeType !== Node.ELEMENT_NODE) return;
+        if (!allowedTags.has(source.tagName)) {
+            source.childNodes.forEach((child) => copyNode(child, destination));
+            return;
+        }
+
+        const safeElement = document.createElement(source.tagName.toLowerCase());
+        if (source.tagName === 'A') {
+            const href = getSafeWebUrl(source.getAttribute('href'));
+            if (href) {
+                safeElement.href = href;
+                safeElement.target = '_blank';
+                safeElement.rel = 'noopener noreferrer';
+            }
+        }
+        source.childNodes.forEach((child) => copyNode(child, safeElement));
+        destination.appendChild(safeElement);
+    }
+
+    parsed.body.childNodes.forEach((child) => copyNode(child, target));
 }
 
 /* --------------------------------------------------------------------

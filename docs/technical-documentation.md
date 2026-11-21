@@ -15,11 +15,22 @@ All features start from one `DOMContentLoaded` listener. Each feature is its own
 | `initContactForm()` | Custom validation (name ≥ 2 chars, valid email pattern, message ≥ 10 chars), inline error elements, confirmation message, focus moves to the first invalid field |
 | `initVisitorMemory()` + helpers (`getVisitor`, `saveVisitor`, `clearVisitor`, `prefillForm`, `updateGreetingWithName`) | Saves the name and email under `portfolio-visitor` in `localStorage` after a successful form submit, pre-fills the form on later visits, adds the first name to the greeting and offers a "Not you?" button to forget the details. Stored data never leaves the browser |
 | `initScrollReveal()` | `IntersectionObserver` adds `.is-visible` to cards as they scroll into view. Skipped when the user prefers reduced motion |
+| `initBeyondEarth()` | Fetches the latest APOD entry from NASA, renders image or video details, and keeps request, empty-data, and image-load errors inside the section |
+| `getApodImageUrl()` / `getSafeWebUrl()` / `formatApodDate()` | Select an image URL (preferring `hdurl`), validate external links, and format the publication date |
+| `appendSafeMarkup()` | Renders NASA's formatted explanation and credit using a small allowlist of HTML elements and safe web links |
 
 ## Data flow
 - **Theme:** click → toggle attribute → write to `localStorage`. On load → read `localStorage` → apply.
 - **Project filter:** `input` event / chip click → `update()` → each card's `hidden` property is set → counter and empty state refresh.
 - **Form:** `submit` → `preventDefault()` → validate every field → show errors or a success message and reset.
+- **APOD:** page load → request one entry from NASA's public APOD endpoint → validate the response array → render its text and image/video; failures show a section-local message. Image load failures replace the image with an explanation and a link to NASA.
+
+## NASA APOD integration
+- Endpoint: `https://science.nasa.gov/wp-json/wp/v2/apod-basic/?per_page=1` (latest entry; no API key).
+- The repository is a static HTML/CSS/JavaScript site, so the feature is implemented as an HTML section with an `initBeyondEarth()` initializer rather than a React component.
+- Browser `fetch()` was tested cross-origin and returned a successful JSON response. No proxy or backend is used.
+- NASA returns `title`, `date`, `media_type`, `explanation`, `credit`/`copyright`, and page/media URLs. Images prefer `hdurl`; if absent, the code checks other image fields and the image in `basic_html` before falling back to `url`.
+- Video items are rendered as links instead of `<img>` elements. Formatted NASA text is rendered through a restricted HTML allowlist; arbitrary API markup and unsafe link protocols are not inserted into the page.
 
 ## CSS notes
 - Colours and fonts are CSS custom properties on `:root`; dark mode overrides them under `[data-theme="dark"]`.
@@ -37,5 +48,4 @@ Tested features use standard APIs (`IntersectionObserver`, `localStorage`, CSS c
 
 ## Possible future work
 - Connect the contact form to a service (e.g. Formspree) or a backend.
-- Fetch GitHub repositories from the public API and render them as project cards.
-- Add a loading indicator and error message for that fetch.
+- Add retry controls for external API requests.
